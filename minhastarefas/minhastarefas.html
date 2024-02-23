@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Tarefas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div id="left-box">
+            <h1>Registro de Tarefas</h1>
+            <hr/>
+            <input type="text" placeholder="Título (máximo 30 caracteres)" v-model="newTask.titulo" maxlength="30" required>
+            <textarea placeholder="Descrição" v-model="newTask.descricao"></textarea>
+            <input type="datetime-local" v-model="newTask.dataHora">
+            <button @click="addTask"><i class="fas fa-plus"></i> Adicionar Tarefa</button>
+            <button class="export-btn" @click="exportTasks"><i class="fas fa-download"></i> Exportar Tarefas</button>
+        </div>
+        <div id="right-box" :class="{ 'no-tasks' : tasks.length === 0 }" :class="{ 'tasks' : tasks.length > 0 }">
+            <h1 v-if="tasks.length === 0">Nenhuma tarefa encontrada</h1>
+            <h1 v-else style="text-align: center;">Tarefas</h1>
+            <hr/>
+            <div class="task-card" v-for="(task, index) in tasks" :key="index">
+                <h2>{{ task.titulo }}</h2>
+                <p><strong>Descrição:</strong> {{ task.descricao }}</p>
+                <p><strong>Data e Hora:</strong> {{ task.dataHora }}</p>
+                <button class="delete-btn" @click="deleteTask(index)"><i class="fas fa-trash-alt"></i> Apagar</button>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                newTask: {
+                    titulo: '',
+                    descricao: '',
+                    dataHora: ''
+                },
+                tasks: []
+            },
+            methods: {
+                addTask() {
+                    if (this.newTask.titulo.trim() !== '' && this.newTask.dataHora.trim() !== '') {
+                        this.tasks.push({
+                            titulo: this.newTask.titulo.trim(),
+                            descricao: this.newTask.descricao.trim(),
+                            dataHora: this.newTask.dataHora
+                        });
+                        this.newTask.titulo = '';
+                        this.newTask.descricao = '';
+                        this.newTask.dataHora = '';
+                        this.showExportButton();
+                    } else {
+                        alert('Por favor, forneça título e data-hora para a tarefa.');
+                    }
+                },
+                deleteTask(index) {
+                    this.tasks.splice(index, 1);
+                    this.showExportButton();
+                },
+                exportTasks() {
+                    const tasksText = this.tasks.map(task => `${task.titulo} - ${task.descricao} - ${task.dataHora}`).join('\n');
+                    const blob = new Blob([tasksText], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'minhastarefas.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+                showExportButton() {
+                    if (this.tasks.length > 0) {
+                        document.querySelector('.export-btn').style.display = 'inline-block';
+                    } else {
+                        document.querySelector('.export-btn').style.display = 'none';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
