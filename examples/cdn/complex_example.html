@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> DID NOT WORK!-->
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <span v-bind:title="text">
+            Hover on this text to see an info binded dynamically
+        </span>
+        <p v-if="seen">Jesus be always praised!</p>
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
+        <h1>{{ reverseMsg }}</h1>
+        <button v-on:click="reverse">REVERSE</button>
+        <hr/>
+        <p>{{ input }}</p>
+        <input v-model="input"/>
+        <ul>
+            <todo-item
+                v-for="item in jesusIsBeloved"
+                v-bind:todo="item"
+                v-bind:key="item.id"
+            ></todo-item>
+        </ul>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('todo-item', {
+            props: ['todo'],
+            template: '<li>{{ todo.text }}</li>'
+        });
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Jesus, eu te amo!',
+                text: 'This page was loaded at ' + new Date().toLocaleString(),
+                seen: true,
+                todos: [
+                    { text: 'Pray to God'},
+                    { text: 'Read the Holy Bible'},
+                    { text: 'Fast'},
+                    { text: 'Worship Jesus'},
+                    { text: 'Go to church'},
+                ],
+                reverseMsg: 'Subi no ônibus',
+                input: '[JESUS, KISS ME PLEASE]',
+                jesusIsBeloved: [
+                    { id: 1, text: 'I love you Jesus' },
+                    { id: 2, text: 'I love you Jesus more and more' },
+                    { id: 3, text: 'I love you Jesus the best I can' },
+                    { id: 4, text: 'I love you Jesus day after day' },
+                    { id: 5, text: 'I love you Jesus with my soul' },
+                    { id: 6, text: 'I love you Jesus all the more' }
+                ]
+            },
+            methods: {
+                reverse: function() {
+                    this.reverseMsg = this.reverseMsg.split('').reverse().join('')
+                }
+            }
+        });
+    </script>
+</body>
+</html>
